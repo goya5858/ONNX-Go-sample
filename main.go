@@ -8,9 +8,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/owulveryck/onnx-go"
-	"github.com/owulveryck/onnx-go/backend/x/gorgonnx"
-
 	//"github.com/owulveryck/onnx-go/internal/x/images"
 	"Go-img-ONNX/images"
 
@@ -19,7 +16,7 @@ import (
 
 func main() {
 	// I. Inputの作成
-	file, fileOpenErr := os.Open("./logo192.png")
+	file, fileOpenErr := os.Open("sample.png")
 	defer file.Close()
 	if fileOpenErr != nil {
 		log.Fatal(fileOpenErr)
@@ -37,31 +34,36 @@ func main() {
 	if convertErr != nil {
 		fmt.Println("ImageToBCHW error:", convertErr)
 	}
-	//fmt.Println(input)
+	fmt.Println("input size:", input.Size())
 
 	// II. Modelの作成
-	backend := gorgonnx.NewGraph()
-	model := onnx.NewModel(backend)
+	//backend := gorgonnx.NewGraph()
+	//model := onnx.NewModel(backend)
+	//
+	//byte_model, _ := os.ReadFile("./SampleModel.onnx")
+	//ReadModelErr := model.UnmarshalBinary(byte_model)
+	//if ReadModelErr != nil {
+	//	fmt.Println(ReadModelErr)
+	//}
+	//fmt.Println("model loaded")
+	//
+	//// III. Inference
+	//model.SetInput(0, input)
+	//fmt.Println("Run model")
+	//runErr := backend.Run()
+	//if runErr != nil {
+	//	log.Fatal(runErr)
+	//}
+	//fmt.Println("Inference done")
+	//output, _ := model.GetOutputTensors()
+	//
 
-	byte_model, _ := os.ReadFile("./SampleModel.onnx")
-	ReadModelErr := model.UnmarshalBinary(byte_model)
-	if ReadModelErr != nil {
-		fmt.Println(ReadModelErr)
-	}
-
-	// III. Inference
-	model.SetInput(0, input)
-	runErr := backend.Run()
-	if runErr != nil {
-		log.Fatal(runErr)
-	}
-	output, _ := model.GetOutputTensors()
-
-	outimg, convertErr2 := images.TensorToImg(output[0])
+	//outimg, convertErr2 := images.TensorToImg(output[0])
+	outimg, convertErr2 := images.TensorToImg(input)
 	if convertErr2 != nil {
 		log.Fatal(convertErr2)
 	}
-	//fmt.Println("outIMG:", outimg)
+	fmt.Println("outIMG:", outimg)
 
 	// IV. 予測の保存
 	file_out, createErr := os.Create("./decode.png")
